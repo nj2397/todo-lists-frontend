@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import { ChakraProvider } from "@chakra-ui/react"
 import './App.css';
+import Todo from './components/Todo';
+import LoginUser from "./components/Login";
+import {
+  createBrowserRouter,
+  RouterProvider
+} from "react-router-dom"
+import Signup from "./components/Signup";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <LoginUser />
+  },
+  {
+    path: "/register",
+    element: <Signup />
+  },
+  {
+    path: "/todo-dashboard",
+    element: <Todo />
+  }
+])
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <ChakraProvider>
+        <RouterProvider router={router} />
+      </ChakraProvider>
+
     </div>
   );
 }

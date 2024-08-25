@@ -1,0 +1,4 @@
+1. validation of updateTodo API, with parameter alteration
+2. check for duplicacy of Todos before adding a new one
+3. redirection to Login page incase of Token Expiration
+4. Pagination for todo lists

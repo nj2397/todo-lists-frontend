@@ -1,0 +1,66 @@
+.todo-section-container {
+    /* display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100vh; */
+    /* background-color: yellow */
+}
+
+.top-container {
+    height: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom-container {
+    display: flex;
+    justify-content: center;
+    height: 80vh;
+    width: 100%
+}
+
+.todo-section-grid {
+    display: grid;
+    width: 100%;
+    /* background-color: yellow; */
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.grid-item {
+    padding: 5% 10%
+}
+
+.todo-header-divider {
+    display: flex;
+    justify-content: center
+}
+
+.todo-add-icon {
+    position: fixed;
+    bottom: 100px;
+    right: 50px;
+    z-index: 1;
+    cursor: pointer;
+    background-color: aqua;
+    color: white;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow:  4px 4px 8px rgba(0, 0, 0, 0.3)
+}
+
+
+.create-one {
+    color: #ffcc00;
+    font-weight: 700;
+    transition: color 0.2s
+}
+
+.create-one:hover {
+    color: orange;
+    font-weight: 700
+}
