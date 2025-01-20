@@ -20,7 +20,7 @@ const LoginUser = () => {
                 ...loginCreds,
                 username: e.target.value
             })
-        }, 3000)
+        }, 800)
 
 
         return () => clearTimeout(typeHandler)
@@ -32,19 +32,19 @@ const LoginUser = () => {
                 ...loginCreds,
                 password: e.target.value
             })
-        }, 3000)
+        }, 800)
 
         return () => clearTimeout(typeHandler)
     }
 
-
+    // console.log('server uri --> ', process.env.REACT_APP_TODO_SERVER_URI)
     const handleCredsSubmit = async () => {
         console.log("Login Credentials ---> ", loginCreds)
 
         try {
-            const response = await axios.post("http://localhost:8082/todo/login", loginCreds)
+            const response = await axios.post(`${process.env.REACT_APP_TODO_SERVER_URI}/login`, loginCreds)
         
-            console.log("response -->", response.data)
+            console.log("response -->", response)
 
             if (response.data.status === 200 && response.data.message.userID) {
                 toast({
@@ -62,6 +62,16 @@ const LoginUser = () => {
             if (response.data.status === 200 && response.data.message === "User Not Found") {
                 toast({
                     title: "User Not Found",
+                    status: 'info',
+                    duration: 10000,
+                    isClosable: true
+                })
+                return;
+            }
+
+            if (response.data.status === 200 && response.data.message === "No User") {
+                toast({
+                    title: "No User Found",
                     status: 'info',
                     duration: 10000,
                     isClosable: true
@@ -96,19 +106,29 @@ const LoginUser = () => {
 
             console.log("err --> ", err)
 
-            toast({
-                title: err.response.data.message,
-                status: 'warning',
-                duration: 10000,
-                isClosable: true
-            })
+            if (err.response) {
+                toast({
+                    title: err.response.data.message,
+                    status: 'warning',
+                    duration: 10000,
+                    isClosable: true
+                })
+            } else {
+                toast ({
+                    title: err.message,
+                    status: 'warning',
+                    duration: 10000,
+                    isClosable: true
+                })
+            }
+            
         }
     }
 
 
 
     return (
-        <div class="login-container">
+        <div className="login-container">
             <div
                 style={{
                     height: "10vh",

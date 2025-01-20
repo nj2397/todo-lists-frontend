@@ -22,7 +22,7 @@ const Signup = () => {
                 ...registerCreds,
                 username: e.target.value
             })
-        }, 3000)
+        }, 800)
 
 
         return () => clearTimeout(typeHandler)
@@ -34,7 +34,7 @@ const Signup = () => {
                 ...registerCreds,
                 password: e.target.value
             })
-        }, 3000)
+        }, 800)
 
         return () => clearTimeout(typeHandler)
     }
@@ -42,7 +42,7 @@ const Signup = () => {
 
     const handleCredsSubmit = async () => {
         try {
-            const response = await axios.post("http://localhost:8082/todo/signup", registerCreds)
+            const response = await axios.post(`${process.env.REACT_APP_TODO_SERVER_URI}/signup`, registerCreds)
         
             if (response.data.status === 200) {
                 toast({
@@ -60,8 +60,9 @@ const Signup = () => {
             console.log("err --> ", err)
 
             toast({
-                title: err.response.data.message,
-                description: err.response.data.message.includes("User already exists") && `Sorry! Duplicate accounts are not allowed`,
+                title: err.message,
+                // description: err.response.data.message.includes("User already exists") && `Sorry! Duplicate accounts are not allowed`,
+                description: err.message,
                 status: 'warning',
                 duration: 5000,
                 isClosable: true

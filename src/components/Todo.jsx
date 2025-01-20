@@ -38,6 +38,12 @@ const Todo = () => {
         time: '',
     })
     const [editMode, setEditMode] = useState(false);
+    const [inputCapture, setInputCapture] = useState("");
+    const [getTodoDetails, setGetTodoDetails] = useState({
+        title: "",
+        date: "",
+        time: ""
+    })
 
     const id = localStorage.getItem('userID')
     const toastRenderOnce = useRef(false)
@@ -47,7 +53,7 @@ const Todo = () => {
         console.log('id --> ', id)
         try {
             console.log('id --> ', id)
-            const response = await axios.get(`http://localhost:8082/todo/getTodos?id=${id}`, {
+            const response = await axios.get(`${process.env.REACT_APP_TODO_SERVER_URI}/getTodos?id=${id}`, {
                 headers: {
                     "Authorization": localStorage.getItem('token'),
                     "Content-Type": "application/json" 
@@ -61,7 +67,7 @@ const Todo = () => {
             if ( err.response.data.status === 401 ) {
                 toast({
                     title: "Token Expired",
-                    description: "Please login yourself again to continue",
+                    description: "Please login yourself again to continue", 
                     status: 'info',
                     duration: 2000,
                     isClosable: false
@@ -75,10 +81,11 @@ const Todo = () => {
     }
 
     useEffect(() => {
-        if (toastRenderOnce.current === true)
-            fetchTodos();
+        // if (toastRenderOnce.current === true)
+        //     fetchTodos();
 
-        return () => toastRenderOnce.current = true
+        // return () => toastRenderOnce.current = true
+        fetchTodos();
     }, [])
 
 
@@ -119,7 +126,7 @@ const Todo = () => {
     const handleAddTodo = async () => {
         try {
             console.log('clicked handleAddTodo')
-            const response = await axios.post(`http://localhost:8082/todo/addTodo`, 
+            const response = await axios.post(`${process.env.REACT_APP_TODO_SERVER_URI}/addTodo`, 
                 {
                     id,
                     title: todoDetails.title,
@@ -182,9 +189,10 @@ const Todo = () => {
 
     const handleEditTodo = async () => {
         try {
-            const response = await axios.patch(`http://localhost:8082/todo/updateTodo`,
+            const response = await axios.patch(`${process.env.REACT_APP_TODO_SERVER_URI}/updateTodo`,
                 {
                     id,
+                    initialTitle: getTodoDetails.title,
                     title: todoDetails.title,
                     date: todoDetails.date,
                     time: todoDetails.time
@@ -207,6 +215,11 @@ const Todo = () => {
 
                 fetchTodos();
                 setIsModalOpen(false);
+                setGetTodoDetails({
+                    title: "",
+                    date: "",
+                    time: ""
+                })
                 
             }  else if (response.data.status === 401) {
                 toast({
@@ -230,8 +243,55 @@ const Todo = () => {
         }
     }
 
-    return (
-        <>
+    const handleEnteredInput = async () => {
+        try {
+            console.log('inputCapture --> ', inputCapture)
+            const response = await axios.post(`${process.env.REACT_APP_TODO_SERVER_URI}/search`, 
+                {
+                    id, 
+                    title: inputCapture
+                },
+                {
+                    headers: {
+                        "Authorization": localStorage.getItem('token'),
+                        "Content-Type": "application/json"
+                    }
+                }
+            )
+
+            if (response.data.status === 200) {
+                setTodoData(response.data.message)
+                return;
+            } 
+
+            if (response.data.status === 401) {
+                toast({
+                    title: "Token Expired",
+                    description: "Please login yourself again to continue",
+                    status: "success",
+                    duration: 2000,
+                    isClosable: false
+                })
+                localStorage.clear();
+                navigate("/")
+            }
+        } catch (err) {
+            toast ({
+                title: "Todo Updation Failed",
+                description: err.message,
+                status: "error",
+                duration: 3000,
+                isClosable: false
+            })
+        }
+    }
+
+    // useEffect(() => {
+    //     console.log('input capture ---> ', inputCapture)  
+    // }, []) 
+
+    return ( 
+        <> 
             <div className="todo-section-container">
                 <div
                     style={{
@@ -240,7 +300,16 @@ const Todo = () => {
                     }}
                 >
 
-                    <Header name={"logout"}/>
+                    <Header 
+                        name={"logout"} 
+                        search={"search"} 
+                        inputCapture={setInputCapture}
+                        enteredInput={handleEnteredInput}
+                        // onKeyDownCapture={(e) => {
+                        //     if (e.key === "Enter")
+                        //         handleEnteredInput();
+                        // }}   
+                    />
                 </div>
                 <div className='top-container'>
                     <p
@@ -271,12 +340,16 @@ const Todo = () => {
                                                     variant="outline"
                                                     icon={<EditIcon/>}
                                                     onClick={() => {
+                                                        setGetTodoDetails({
+                                                            title: item.title,
+                                                            date: item.date,
+                                                            time: item.time
+                                                        })
                                                         setTodoDetails({
                                                             title: item.title,
                                                             date: item.date,
                                                             time: item.time
                                                         });
-
                                                         setEditMode(true);
                                                         setIsModalOpen(true);
                                                     }}
@@ -339,6 +412,11 @@ const Todo = () => {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => {
+                    setGetTodoDetails({
+                        title: "",
+                        date: "",
+                        time: ""
+                    })
                     setTodoDetails({
                         title: "",
                         date: "",
@@ -364,9 +442,11 @@ const Todo = () => {
                         >
                             <Input
                                 placeholder="ToDo title"
-                                type="text"
+                                type="text" 
                                 defaultValue={todoDetails.title}
                                 onInputCapture={handleTitle}
+                                // ref={}
+                                // isDisabled={todoDetails.title || false}
                             />
                             <Input
                                 placeholder="Date"
