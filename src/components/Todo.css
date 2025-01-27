@@ -27,8 +27,36 @@
     grid-template-columns: 1fr 1fr 1fr;
 }
 
+@media screen and (max-width: 1024px) {
+    .todo-section-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .todo-section-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .grid-item {
     padding: 5% 10%
+}
+
+.modal-content {
+    width: 80%
+}
+
+@media screen and (max-width: 1024px) {
+    .modal-content {
+        width: 80%
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .modal-content {
+        width: 80%
+    }
 }
 
 .todo-header-divider {

@@ -60,9 +60,9 @@ const Signup = () => {
             console.log("err --> ", err)
 
             toast({
-                title: err.message,
+                title: err.response.data.message.includes("User already exists") && `Account already exists`,
                 // description: err.response.data.message.includes("User already exists") && `Sorry! Duplicate accounts are not allowed`,
-                description: err.message,
+                // description: err.message,
                 status: 'warning',
                 duration: 5000,
                 isClosable: true

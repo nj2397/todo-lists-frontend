@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect} from 'react'
 import axios from 'axios';
 import "./Todo.css"
 import { 
@@ -46,7 +46,7 @@ const Todo = () => {
     })
 
     const id = localStorage.getItem('userID')
-    const toastRenderOnce = useRef(false)
+    // const toastRenderOnce = useRef(false)
 
     const fetchTodos = async () => {
 
@@ -286,10 +286,6 @@ const Todo = () => {
         }
     }
 
-    // useEffect(() => {
-    //     console.log('input capture ---> ', inputCapture)  
-    // }, []) 
-
     return ( 
         <> 
             <div className="todo-section-container">
@@ -305,10 +301,6 @@ const Todo = () => {
                         search={"search"} 
                         inputCapture={setInputCapture}
                         enteredInput={handleEnteredInput}
-                        // onKeyDownCapture={(e) => {
-                        //     if (e.key === "Enter")
-                        //         handleEnteredInput();
-                        // }}   
                     />
                 </div>
                 <div className='top-container'>
@@ -427,7 +419,20 @@ const Todo = () => {
                 }}
             >
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent
+                    // className="modal-content"
+                    style={{
+                        width: "90%", // Default width
+                    }}
+                    // _media={{
+                    //     '@media screen and (max-width: 1024px)': {
+                    //         width: "100%", // Width for screens 1024px or less
+                    //     },
+                    //     '@media screen and (max-width: 768px)': {
+                    //         width: "90%", // Width for mobile devices
+                    //     },
+                    // }}
+                >
                     <ModalHeader>
                         Add a ToDo
                     </ModalHeader>

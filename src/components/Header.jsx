@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 import { Button, Image, Input, InputGroup, InputLeftElement, useToast } from "@chakra-ui/react"
 import Logo from "./ToDo’s.png"
 import { useNavigate } from "react-router-dom"
@@ -45,7 +45,7 @@ const Header = (props) => {
             />
             
             {props.search && (
-                <div style={{ width: '50%'}}>
+                <div style={{ width: '50%', marginRight: '5%'}}>
                     <InputGroup>
                         <InputLeftElement pointerEvents='none'>
                             <Search2Icon 
