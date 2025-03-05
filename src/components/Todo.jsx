@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import "./Todo.css"
 import { 
@@ -45,9 +45,10 @@ const Todo = () => {
         date: "",
         time: ""
     })
+    
+    const [countList, setCountList] = useState(0);
 
-    const id = localStorage.getItem('userID')
-    // const toastRenderOnce = useRef(false)
+    const id = parseInt(localStorage.getItem('userID'))
 
     const fetchTodos = async () => {
 
@@ -260,8 +261,11 @@ const Todo = () => {
                 }
             )
 
+            console.log('response.data -->', response.data)
+
             if (response.data.status === 200) {
-                setTodoData(response.data.message)
+                setTodoData(response.data.message.result)
+                setCountList(response.data.message.count)
                 return;
             } 
 
@@ -287,6 +291,7 @@ const Todo = () => {
         }
     }
 
+
     return ( 
         <> 
             <div className="todo-section-container">
@@ -305,21 +310,14 @@ const Todo = () => {
                     />
                 </div>
                 <div className='top-container'>
-                    <p
-                        style={{
-                            fontWeight: 700,
-                            fontSize: 50
-                        }}
-                    >
-                        ToDo's
-                    </p>
+                    <p>ToDo's</p>
                 </div>
                 <div className="bottom-container">
                     {todoData.length > 0 ? (
                         <div className="todo-section-grid">
                             {todoData.map((item, index) => (
                                 <div key={index} className="grid-item">
-                                    <Card boxShadow="xl" maxW="sm">
+                                    <Card boxShadow="xl" maxW="sm" className='todo-card'>
                                         <CardHeader>
                                             <Stack direction="row" justifyContent="space-between" width="100%">
                                                 <Text
@@ -360,8 +358,8 @@ const Todo = () => {
                                                 }}
                                                 direction="row"
                                             >
-                                                <Text>Date: {item.date}</Text>
-                                                <Text>Time: {item.time}</Text>
+                                                <Text><strong>Date:</strong> {item.date.split('-').reverse().join('-')}</Text>
+                                                <Text><strong>Time:</strong> {item.time}</Text>
                                             </Stack>
                                         </CardBody>
                                     </Card>
@@ -375,14 +373,25 @@ const Todo = () => {
                                 width:'50vw',
                             }}
                         >
-                            <Text
-                                fontSize='2xl'
-                                style={{
-                                    fontWeight: '500'
-                                }}
-                            >
-                                😳 Oops! No Todo's Found. <a href="#" className="create-one" onClick={(e) => {e.preventDefault(); setIsModalOpen(true)}}>Create one</a> and schedule yourself for the day.
-                            </Text>
+                            {countList === 0 ? (
+                                <Text
+                                    fontSize='2xl'
+                                    style={{
+                                        fontWeight: '500'
+                                    }}
+                                >
+                                    😳 Oops! No Todo's Found. <a href="#" className="create-one" onClick={(e) => {e.preventDefault(); setIsModalOpen(true)}}>Create one</a> and schedule yourself for the day.
+                                </Text>
+                            ) : (
+                                <Text
+                                    fontSize='2xl'
+                                    style={{
+                                        fontWeight: '500'
+                                    }}
+                                >
+                                    😔 Oops! No Todo's for the searched found...
+                                </Text>
+                            ) }
                         </div>
                     )}
                 </div>
@@ -421,21 +430,12 @@ const Todo = () => {
             >
                 <ModalOverlay />
                 <ModalContent
-                    // className="modal-content"
                     style={{
                         width: "90%", // Default width
                     }}
-                    // _media={{
-                    //     '@media screen and (max-width: 1024px)': {
-                    //         width: "100%", // Width for screens 1024px or less
-                    //     },
-                    //     '@media screen and (max-width: 768px)': {
-                    //         width: "90%", // Width for mobile devices
-                    //     },
-                    // }}
                 >
                     <ModalHeader>
-                        Add a ToDo
+                        {editMode ? "Modify a ToDo" : "Add a ToDo"}
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody
@@ -451,8 +451,6 @@ const Todo = () => {
                                 type="text" 
                                 defaultValue={todoDetails.title}
                                 onInputCapture={handleTitle}
-                                // ref={}
-                                // isDisabled={todoDetails.title || false}
                             />
                             <Input
                                 placeholder="Date"

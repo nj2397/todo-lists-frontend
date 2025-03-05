@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Stack, useToast } from "@chakra-ui/react";
 import Header from "./Header"
@@ -10,6 +10,8 @@ const Signup = () => {
 
     const toast = useToast();
     const navigate = useNavigate();
+
+    const [windowWidth, setWindowWidth] = useState(false);
 
     const [registerCreds, setRegisterCreds] = useState({
         username: '',
@@ -70,6 +72,19 @@ const Signup = () => {
         }
     }
 
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth < 512);
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [])
+
 
     return (
         <div className="signup-container">
@@ -107,7 +122,8 @@ const Signup = () => {
                         <div
                             style={{
                                 fontWeight: 700,
-                                fontSize: 20
+                                fontSize: 20,
+                                marginBottom: "2em"
                             }}
                         >
                             <p>👋 Hey! Register yourself to get started</p>
@@ -116,43 +132,73 @@ const Signup = () => {
                             style={{
                                 // backgroundColor: 'honeydew',
                                 height: "30vh",
-                                width: "50vw",
+                                // width: "50vw",
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center"
                             }}
                         >
                             <Stack spacing="2em">
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <p style={{ marginRight: "1em" }}>Username: </p>
-                                    <Input
-                                        type="text"
-                                        onInputCapture={handleUsername}
-                                        onKeyDownCapture={(e) => {
-                                            if (e.key === "Enter")
-                                                handleCredsSubmit();
-                                        }}
-                                    />
-                                </div>
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <p style={{ marginRight: "1em" }}>Password: </p>
-                                    <Input 
-                                        type='password'
-                                        onInputCapture={handlePassword}
-                                        onKeyDownCapture={(e) => {
-                                            if (e.key === "Enter")
-                                                handleCredsSubmit();
-                                        }}
-                                    />
-                                </div>
-                                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-                                    <Button 
-                                        variant="outline"
-                                        onClick={handleCredsSubmit}
-                                    >
-                                        Signup
-                                    </Button>
-                                </div>
+                                { windowWidth ? 
+                                    <>
+                                        <div>
+                                            <Input
+                                                type="text"
+                                                onInputCapture={handleUsername}
+                                                placeholder="Username"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Input
+                                                type="password"
+                                                onInputCapture={handlePassword}
+                                                placeholder="Password"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Button 
+                                                variant="outline"
+                                                onClick={handleCredsSubmit}
+                                            >
+                                                Signup
+                                            </Button>
+                                        </div>
+                                    </>
+                                    
+                                :
+                                    <>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <p style={{ marginRight: "1em" }}>Username: </p>
+                                            <Input
+                                                type="text"
+                                                onInputCapture={handleUsername}
+                                                onKeyDownCapture={(e) => {
+                                                    if (e.key === "Enter")
+                                                        handleCredsSubmit();
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                            <p style={{ marginRight: "1em" }}>Password: </p>
+                                            <Input 
+                                                type='password'
+                                                onInputCapture={handlePassword}
+                                                onKeyDownCapture={(e) => {
+                                                    if (e.key === "Enter")
+                                                        handleCredsSubmit();
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+                                            <Button 
+                                                variant="outline"
+                                                onClick={handleCredsSubmit}
+                                            >
+                                                Signup
+                                            </Button>
+                                        </div>
+                                    </>
+                                }
                             </Stack>
                         </div>
                     </Stack>
