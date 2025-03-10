@@ -1,8 +1,5 @@
-import { useToast } from "@chakra-ui/react";
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
 
 const loginValue = createSlice({
     name: "Login",

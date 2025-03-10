@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"; 
-import { useSelector, useDispatch } from "react-redux"; 
+import { useDispatch } from "react-redux"; 
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
 import { Button, Image, Input, Stack, Text, useToast } from "@chakra-ui/react";
 import Header from "./Header";
 import { useGoogleLogin } from "@react-oauth/google";
 import GoogleIcon from "./assets/icons/google-icon.svg"
-import { setCreds, login, logout, loginUser } from "./redux/LoginReducer"
+import { setCreds, loginUser } from "./redux/LoginReducer"
 
 import "./Login.css"
 
