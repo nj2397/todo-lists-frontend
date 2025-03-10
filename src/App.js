@@ -8,6 +8,9 @@ import {
 } from "react-router-dom"
 import Signup from "./components/Signup";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import loginReducer from "./components/redux/LoginReducer"
 
 const router = createBrowserRouter([
   {
@@ -24,13 +27,21 @@ const router = createBrowserRouter([
   }
 ])
 
+const store = configureStore({
+  reducer: {
+    user: loginReducer
+  }
+})
+
 function App() {
   return (
     <div className="App">
 
+      <Provider store={store}>
         <ChakraProvider>
           <RouterProvider router={router} />
         </ChakraProvider>
+      </Provider>
 
     </div>
   );

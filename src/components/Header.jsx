@@ -3,6 +3,8 @@ import { Button, Image, Input, InputGroup, InputLeftElement, useToast } from "@c
 import Logo from "./ToDo’s.png"
 import { useNavigate } from "react-router-dom"
 import { Search2Icon } from "@chakra-ui/icons";
+import { useDispatch } from "react-redux";
+import { logout } from "./redux/LoginReducer";
 
 const Header = (props) => {
     const navigate = useNavigate();
@@ -13,7 +15,8 @@ const Header = (props) => {
         "logout" : "Signout"
     }
 
-    const toast = useToast()
+    const toast = useToast();
+    const dispatch = useDispatch();
 
 
     const handleInputField = (value) => {
@@ -81,15 +84,7 @@ const Header = (props) => {
                         if (props.name === "register")
                             navigate("/register")
                         if (props.name === "logout") {
-                            toast({
-                                title: 'Logged Out Successfully',
-                                description: 'To resume, sign in again to continue',
-                                status: 'success',
-                                duration: 2000,
-                                isClosable: false
-                            })
-                            localStorage.clear();
-                            navigate("/")
+                            dispatch(logout(toast, navigate))
                         }
                     }}
                 >

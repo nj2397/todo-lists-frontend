@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";  
+import { useEffect, useState } from "react"; 
+import { useSelector, useDispatch } from "react-redux"; 
 import axios from 'axios';
 import { useNavigate } from "react-router-dom"
 import { Button, Image, Input, Stack, Text, useToast } from "@chakra-ui/react";
 import Header from "./Header";
 import { useGoogleLogin } from "@react-oauth/google";
 import GoogleIcon from "./assets/icons/google-icon.svg"
+import { setCreds, login, logout, loginUser } from "./redux/LoginReducer"
 
 import "./Login.css"
 
@@ -12,12 +14,8 @@ const LoginUser = () => {
 
     const toast = useToast();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [windowWidth, setWindowWidth] = useState(false)
-
-    const [loginCreds, setLoginCreds] = useState({
-        username: '',
-        password: ''
-    })
 
 
     const googleLogin = useGoogleLogin({
@@ -51,111 +49,18 @@ const LoginUser = () => {
     })
 
     const handleUsername = (e) => {
-        const typeHandler = setTimeout(() => {
-            setLoginCreds({
-                ...loginCreds,
-                username: e.target.value
-            })
-        }, 800)
 
-
-        return () => clearTimeout(typeHandler)
+        dispatch(setCreds({
+            key: "username",
+            value: e.target.value
+        }))
     }
 
     const handlePassword = (e) => {
-        const typeHandler = setTimeout(() => {
-            setLoginCreds({
-                ...loginCreds,
-                password: e.target.value
-            })
-        }, 800)
-
-        return () => clearTimeout(typeHandler)
-    }
-
-    const handleCredsSubmit = async () => {
-        console.log("Login Credentials ---> ", loginCreds)
-
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_TODO_SERVER_URI}/login`, loginCreds)
-        
-            if (response.data.status === 200 && response.data.message.userID) {
-                toast({
-                    title: "Credentials Verified Successfully",
-                    status: 'success',
-                    duration: 10000,
-                    isClosable: true
-                })
-                localStorage.setItem( 'userID', response.data.message.userID )
-                localStorage.setItem( 'token', response.data.message.token )
-                navigate("/todo-dashboard")
-                return
-            }
-
-            if (response.data.status === 200 && response.data.message === "User Not Found") {
-                toast({
-                    title: "User Not Found",
-                    status: 'info',
-                    duration: 10000,
-                    isClosable: true
-                })
-                return;
-            }
-
-            if (response.data.status === 200 && response.data.message === "No User") {
-                toast({
-                    title: "No User Found",
-                    status: 'info',
-                    duration: 10000,
-                    isClosable: true
-                })
-                return;
-            }
-
-            if (response.data.status === 200 && response.data.message === "Incorrect Password") {
-                toast({
-                    title: "Incorrect Password",
-                    status: "error",
-                    duration: "2000",
-                    isClosable: false
-                })
-
-                return;
-            }
-
-            if (response.data.status === 200 && response.data.message === "Password didn't match") {
-                toast({
-                    title: "Password didn't match",
-                    status: "info",
-                    duration: "2000",
-                    isClosable: false
-                })
-
-                return;
-            }
-
-
-        } catch (err) {
-
-            console.log("err --> ", err)
-
-            if (err.response) {
-                toast({
-                    title: err.response.data.message,
-                    status: 'warning',
-                    duration: 10000,
-                    isClosable: true
-                })
-            } else {
-                toast ({
-                    title: err.message,
-                    status: 'warning',
-                    duration: 10000,
-                    isClosable: true
-                })
-            }
-            
-        }
+        dispatch(setCreds({
+            key: "password",
+            value: e.target.value
+        })) 
     }
 
     useEffect(() => {
@@ -170,8 +75,6 @@ const LoginUser = () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-
-    console.log('windowWidth --> ', windowWidth)
 
     return (
         <div className="login-container">
@@ -235,7 +138,7 @@ const LoginUser = () => {
                                                 onInputCapture={handleUsername}
                                                 onKeyDownCapture={(e) => {
                                                     if (e.key === "Enter")
-                                                        handleCredsSubmit();
+                                                        dispatch(loginUser(toast, navigate));
                                                 }}
                                             />
                                         </div>
@@ -246,14 +149,14 @@ const LoginUser = () => {
                                                 onInputCapture={handlePassword}
                                                 onKeyDownCapture={(e) => {
                                                     if (e.key === "Enter")
-                                                        handleCredsSubmit();
+                                                        dispatch(loginUser(toast, navigate));
                                                 }}
                                             />
                                         </div>
                                         <div>
                                             <Button 
                                                 variant="outline"
-                                                onClick={handleCredsSubmit}
+                                                onClick={() => dispatch(loginUser(toast, navigate))}
                                             >
                                                 Login
                                             </Button>
@@ -267,8 +170,10 @@ const LoginUser = () => {
                                                 type="text"
                                                 onInputCapture={handleUsername}
                                                 onKeyDownCapture={(e) => {
-                                                    if (e.key === "Enter")
-                                                        handleCredsSubmit();
+                                                    if (e.key === "Enter") {
+                                                        console.log('triggered username...')
+                                                        dispatch(loginUser(toast, navigate));
+                                                    }
                                                 }}
                                             />
                                         </div>
@@ -278,8 +183,10 @@ const LoginUser = () => {
                                                 type='password'
                                                 onInputCapture={handlePassword}
                                                 onKeyDownCapture={(e) => {
-                                                    if (e.key === "Enter")
-                                                        handleCredsSubmit();
+                                                    if (e.key === "Enter") {
+                                                        console.log('triggered password...')
+                                                        dispatch(loginUser(toast, navigate));
+                                                    }
                                                 }}
                                             />
                                         </div>
@@ -288,7 +195,7 @@ const LoginUser = () => {
                                         >
                                             <Button 
                                                 variant="outline"
-                                                onClick={handleCredsSubmit}
+                                                onClick={() => dispatch(loginUser(toast, navigate))}
                                             >
                                                 Login
                                             </Button>
