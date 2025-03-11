@@ -11,6 +11,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import loginReducer from "./components/redux/LoginReducer"
+import signupReducer from "./components/redux/SignupReducer"
 
 const router = createBrowserRouter([
   {
@@ -29,7 +30,8 @@ const router = createBrowserRouter([
 
 const store = configureStore({
   reducer: {
-    user: loginReducer
+    userLoggingIn: loginReducer,
+    userSigningUp: signupReducer
   }
 })
 

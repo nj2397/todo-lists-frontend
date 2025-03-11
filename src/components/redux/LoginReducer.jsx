@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const loginValue = createSlice({
+const loginCreds = createSlice({
     name: "Login",
     initialState: {
         value: {
@@ -23,12 +23,12 @@ const loginValue = createSlice({
 })
 
 
-export const { setCreds } = loginValue.actions;
-export default loginValue.reducer
+export const { setCreds } = loginCreds.actions;
+export default loginCreds.reducer
 
 
 export const loginUser = (toast, navigate) => async (dispatch, getState) => {
-        const { value } = getState().user;
+        const { value } = getState().userLoggingIn;
         console.log("value --> ", value)
 
         try {

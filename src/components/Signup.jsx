@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Stack, useToast } from "@chakra-ui/react";
 import Header from "./Header"
-import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setSignupCreds, signupUser } from "./redux/SignupReducer";
 
 
 
@@ -12,64 +13,23 @@ const Signup = () => {
     const navigate = useNavigate();
 
     const [windowWidth, setWindowWidth] = useState(false);
+    const dispatch = useDispatch();
 
-    const [registerCreds, setRegisterCreds] = useState({
-        username: '',
-        password: ''
-    })
 
     const handleUsername = (e) => {
-        const typeHandler = setTimeout(() => {
-            setRegisterCreds({
-                ...registerCreds,
-                username: e.target.value
-            })
-        }, 800)
 
-
-        return () => clearTimeout(typeHandler)
+        dispatch(setSignupCreds({
+            key: "username",
+            value: e.target.value
+        }))
     }
 
     const handlePassword = (e) => {
-        const typeHandler = setTimeout(() => {
-            setRegisterCreds({
-                ...registerCreds,
-                password: e.target.value
-            })
-        }, 800)
 
-        return () => clearTimeout(typeHandler)
-    }
-
-
-    const handleCredsSubmit = async () => {
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_TODO_SERVER_URI}/signup`, registerCreds)
-        
-            if (response.data.status === 200) {
-                toast({
-                    title: "User Registered Successfully",
-                    status: 'success',
-                    duration: 5000,
-                    isClosable: true
-                })
-                navigate("/")
-                return
-            }
-
-        } catch (err) {
-
-            console.log("err --> ", err)
-
-            toast({
-                title: err.response.data.message.includes("User already exists") && `Account already exists`,
-                // description: err.response.data.message.includes("User already exists") && `Sorry! Duplicate accounts are not allowed`,
-                // description: err.message,
-                status: 'warning',
-                duration: 5000,
-                isClosable: true
-            })
-        }
+        dispatch(setSignupCreds({
+            key: "password",
+            value: e.target.value
+        }))
     }
 
     useEffect(() => {
@@ -146,6 +106,10 @@ const Signup = () => {
                                                 type="text"
                                                 onInputCapture={handleUsername}
                                                 placeholder="Username"
+                                                onKeyDownCapture={(e) => {
+                                                    if (e.key === "Enter")
+                                                        dispatch(signupUser(toast, navigate))
+                                                }}
                                             />
                                         </div>
                                         <div>
@@ -153,12 +117,16 @@ const Signup = () => {
                                                 type="password"
                                                 onInputCapture={handlePassword}
                                                 placeholder="Password"
+                                                onKeyDownCapture={(e) => {
+                                                    if (e.key === "Enter")
+                                                        dispatch(signupUser(toast, navigate))
+                                                }}
                                             />
                                         </div>
                                         <div>
                                             <Button 
                                                 variant="outline"
-                                                onClick={handleCredsSubmit}
+                                                onClick={() => dispatch(signupUser(toast, navigate))}
                                             >
                                                 Signup
                                             </Button>
@@ -174,7 +142,7 @@ const Signup = () => {
                                                 onInputCapture={handleUsername}
                                                 onKeyDownCapture={(e) => {
                                                     if (e.key === "Enter")
-                                                        handleCredsSubmit();
+                                                        dispatch(signupUser(toast, navigate))
                                                 }}
                                             />
                                         </div>
@@ -185,14 +153,14 @@ const Signup = () => {
                                                 onInputCapture={handlePassword}
                                                 onKeyDownCapture={(e) => {
                                                     if (e.key === "Enter")
-                                                        handleCredsSubmit();
+                                                        dispatch(signupUser(toast, navigate))
                                                 }}
                                             />
                                         </div>
                                         <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
                                             <Button 
                                                 variant="outline"
-                                                onClick={handleCredsSubmit}
+                                                onClick={() => dispatch(signupUser(toast, navigate))}
                                             >
                                                 Signup
                                             </Button>
