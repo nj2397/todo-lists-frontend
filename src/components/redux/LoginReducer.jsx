@@ -28,7 +28,7 @@ export default loginValue.reducer
 
 
 export const loginUser = (toast, navigate) => async (dispatch, getState) => {
-        const { value } = getState().user; // Use destructuring to get `value`
+        const { value } = getState().user;
         console.log("value --> ", value)
 
         try {
