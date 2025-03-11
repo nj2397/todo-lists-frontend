@@ -12,11 +12,16 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import loginReducer from "./components/redux/LoginReducer"
 import signupReducer from "./components/redux/SignupReducer"
+import ProtectedRoute from "./components/redux/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}><LoginUser /></GoogleOAuthProvider>
+    element: (
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+        <LoginUser />
+      </GoogleOAuthProvider>
+    )
   },
   {
     path: "/register",
@@ -24,7 +29,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/todo-dashboard",
-    element: <Todo />
+    element: (
+      <ProtectedRoute>
+        <Todo />
+      </ProtectedRoute>
+    )
   }
 ])
 

@@ -76,6 +76,14 @@ const LoginUser = () => {
         };
     }, []);
 
+    useEffect(() => {
+        
+        const token = localStorage.getItem('token');
+        if (token)
+            navigate("/todo-dashboard")
+
+    }, [navigate])
+
     return (
         <div className="login-container">
             <div
